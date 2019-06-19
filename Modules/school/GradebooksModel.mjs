@@ -9,8 +9,10 @@ export class GradebooksModel{
         this.id = "";
     }
 
-    newerror(id){
-        if(typeof id != "string") throw new Error('invalid type');
+    checkIdtype(id){
+        if(typeof id != "string"){
+            throw new Error('invalid type');
+        }
     }
 
     async add(level, idgr){
@@ -19,7 +21,7 @@ export class GradebooksModel{
         newobj.id = this.id;
         newobj.level = level;
         newobj.groupid = idgr;
-        this.newerror(idgr);
+        this.checkIdtype(idgr);
         this._grdbook.set(this.id, newobj);
         return this.id;
     }
@@ -31,9 +33,7 @@ export class GradebooksModel{
     }
 
     async addRecord(gradebookId, record){
-        
         let pupilName = "";
-
         for(let i=0; i<this._groups._tmp.length; i++){
             if( this._groups._tmp[i].pupil.id == record.pupilId){
                 pupilName = this._groups._tmp[i].pupil.name.first;

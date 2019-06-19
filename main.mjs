@@ -1,67 +1,60 @@
 import { LMSModel, SubjectsModel, TeachersModel, PupilsModel, GroupsModel, GradebooksModel } from './Modules/index';
 
-// 1
-
-var obj = {
-  "title": "string",
-  "lessons": "number",
-  "description": "string"
-}
-  
-const history = new SubjectsModel({
-  title: 'History',
-  lessons: 24,
-  description: "agwera"
-});
-  
-// will return subjectId
-//console.log(history.id);
-  
-const lms = new LMSModel();
-
 (async () => {
+  
+  var obj = {
+    "title": "string",
+    "lessons": "number",
+    "description": "string"
+  }
+    
+  const history = new SubjectsModel({
+    title: 'History',
+    lessons: 24,
+    description: "agwera"
+  });
+    
+  // will return subjectId
+  //console.log(history.id);
+  
+  const lms = new LMSModel();
   await lms.add(history);
 
   
   await lms.update(21, history);
   
-})()
+  let data =  {
+    "name": {
+      "first": "Giorgi",
+      "last": "Asanidze"
+    },
+    "image": "Surati",
+    "dateOfBirth": "10.10.1998", // format date
+    "emails": [
+      {
+        "email": "g_asanidze@cu.edu.ge",
+        "primary": true
+      }
+    ],
+    "phones": [
+      {
+        "phone": "597123456",
+        "primary": true
+      }
+    ],
+    "sex": "male",
+    "subjects": [
+      {
+        "subject": "History"
+      }
+    ],
+    "description": "There is no description.",
+  };
+  
+  const teachers = new TeachersModel();
+  let teacherId = "";
 
-// 2
-
-let data =  {
-  "name": {
-    "first": "Giorgi",
-    "last": "Asanidze"
-  },
-  "image": "Surati",
-  "dateOfBirth": "10.10.1998", // format date
-  "emails": [
-    {
-      "email": "g_asanidze@cu.edu.ge",
-      "primary": true
-    }
-  ],
-  "phones": [
-    {
-      "phone": "597123456",
-      "primary": true
-    }
-  ],
-  "sex": "male",
-  "subjects": [
-    {
-      "subject": "History"
-    }
-  ],
-  "description": "There is no description.",
-};
-
-const teachers = new TeachersModel();
-let teacherId = "";
-
-(async () => {
-
+  
   teacherId = await teachers.add(data);
 
   // will return Teachers data including teacher's id
@@ -72,52 +65,45 @@ let teacherId = "";
 
   // will remove Teacher
   //await teachers.remove(teacherId)
+  
 
-})()
+  let pulitdata = {
+    "name": {
+      "first": "Giorgi",
+      "last": "Asanidze"
+    },
+    "image": "Surati",
+    "dateOfBirth": "10.20.1865", // format date
+    "phones": [
+      {
+        "phone": "555444333",
+        "primary": true
+      }
+    ],
+    "sex": "male", // male OR female
+    "description": "Agwera"
+  };
+  
+  // Create new Pupil from Pupil's data
+  const pupils = new PupilsModel();
+  let pupilId = "";
 
-// 3
+    // Create a new pupil
+    pupilId = await pupils.add(pulitdata);
+    // will return Pupils data including pupil's id
+    const showpupils = await pupils.read(pupilId)
+  
+    // will update Pupil. This method should use the same validation as a constructor method
+    await pupils.update(pupilId, pulitdata)
+  
+    // will remove pupil
+    //await pupils.remove(pupilId)
+  
+    
+  const room = 236;
+  const groups = new GroupsModel();
+  let groupId = "";
 
-let pulitdata = {
-  "name": {
-    "first": "Giorgi",
-    "last": "Asanidze"
-  },
-  "image": "Surati",
-  "dateOfBirth": "10.20.1865", // format date
-  "phones": [
-    {
-      "phone": "555444333",
-      "primary": true
-    }
-  ],
-  "sex": "male", // male OR female
-  "description": "Agwera"
-};
-
-// Create new Pupil from Pupil's data
-const pupils = new PupilsModel();
-let pupilId = "";
-(async () => {
-
-  // Create a new pupil
-  pupilId = await pupils.add(pulitdata);
-  // will return Pupils data including pupil's id
-  const showpupils = await pupils.read(pupilId)
-
-  // will update Pupil. This method should use the same validation as a constructor method
-  await pupils.update(pupilId, pulitdata)
-
-  // will remove pupil
-  await pupils.remove(pupilId)
-
-})()
-
-// 4
-
-const room = 236;
-const groups = new GroupsModel();
-let groupId = "";
-(async () => {
   // Create a new group
   groupId = await groups.add(room);
   
@@ -137,26 +123,23 @@ let groupId = "";
 
   // It will return array of groups
   await groups.readAll();
-})()
 
-// 5
+  
+  const gradebooks = new GradebooksModel(groups, teachers, lms);
+  const pupilId1 = pupilId;
+  const teacherId2 = teacherId;
+  const level = 1;
 
-const gradebooks = new GradebooksModel(groups, teachers, lms);
-const pupilId1 = pupils.pid;
-const teacherId1 = teachers.tid;
-const level = 1;
-
-(async () => {
 
   // Create a new gradebook
-  const gradebookId = await gradebooks.add(level, groups.gid);
+  const gradebookId = await gradebooks.add(level, groupId);
 
   // Destroy all data inside this gradebook
   //gradebooks.clear();
 
   const record = {
     "pupilId": pupilId1,
-    "teacherId": teacherId1,
+    "teacherId": teacherId2,
     "subjectId": history.id,
     "lesson": 1,
     "mark": 9
@@ -170,3 +153,5 @@ const level = 1;
   // Read information about all students in this gradebook
   const students = await gradebooks.readAll(gradebookId);
 })()
+
+

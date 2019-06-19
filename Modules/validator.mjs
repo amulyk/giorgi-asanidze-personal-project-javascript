@@ -15,16 +15,17 @@ export class Validator {
                         throw new Error(key);
                     }
                 }
-                
             }
         }
     }
 
-    static validate2(object) {
+    static validateDate(object){
         if (!Date.parse(object.dateOfBirth)) {
             throw new Error('date error');
         }
+    }
 
+    static validateGender(object){
         if (object.sex !== 'male' && object.sex !== 'female') {
             throw new Error('sex error');
         }
